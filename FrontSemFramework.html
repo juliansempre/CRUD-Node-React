@@ -1,20 +1,4 @@
 
-<!--
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-///////// CRUD CONSUMINDO API SEM FRAMEWORK EM UM SIMPLES HTML //////////////////
-/////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////// 
--->
-
-<!--
-    O atributo required no campo do formulário é usado para garantir que o conteúdo desse campo seja preenchido antes que o formulário possa ser submetido para a API.
--->
-
-<!--
-   O atributo name é usado para definir o nome do campo que será enviado junto com seus dados quando o formulário for submetido para o servidor. Quando você envia dados de formulário para um servidor, os dados são enviados como uma série de pares chave-valor, onde a chave é o nome do campo e o valor é o valor do campo.
--->
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -89,12 +73,32 @@
             // Atualizar a lista de usuários
             await getUsers();
         });
+//---------------------------------------------------------------------------------
+// ================================
+// retornar em Tabela simplificada
+// ================================
+//........................
+// [html]
+//  <table id="userTable"></table>
+// .......................
+// [javascript]
 
-// =====================
-// retornar em tabela
-// =====================
+        // fetch('http://localhost:8800/api')
+        //     .then((res) => res.json())
+        //     .then((data) => {
+        //         let tableHTML = '';
+        //         data.forEach((user) => {
+        //             tableHTML += `<tr><td>${user.nome}</td><td>${user.email}</td><td>${user.fone}</td></tr>`;
+        //         });
+        //         document.getElementById('userTable').innerHTML = tableHTML;
+        //     })
+        //     .catch((error) => console.log(error));
 
-  async function getUsers() {
+//---------------------------------------------------------------------------------
+// ==============================
+// retornar em tabela com botões
+// ==============================
+    async function getUsers() {
   const response = await fetch(API_URL);
   const users = await response.json();
 
@@ -102,38 +106,16 @@
 
   const table = document.createElement('table');
 
-  // Cabeçalho da tabela
-  const tableHeader = document.createElement('tr');
   const headers = ['Nome', 'Email', 'Contato', ''];
-  headers.forEach(headerText => {
-    const th = document.createElement('th');
-    th.textContent = headerText;
-    tableHeader.appendChild(th);
-  });
+  const tableHeader = createTableRow(headers, 'th');
   table.appendChild(tableHeader);
 
-  // Linhas da tabela
   users.forEach(user => {
-    const row = document.createElement('tr');
-
-    // Colunas da tabela
-    const nomeCell = document.createElement('td');
-    nomeCell.textContent = user.nome;
-    row.appendChild(nomeCell);
-
-    const emailCell = document.createElement('td');
-    emailCell.textContent = user.email;
-    row.appendChild(emailCell);
-
-    const contatoCell = document.createElement('td');
-    contatoCell.textContent = user.fone;
-    row.appendChild(contatoCell);
+    const row = createTableRow([user.nome, user.email, user.fone]);
 
     const actionsCell = document.createElement('td');
 
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Editar';
-    editButton.addEventListener('click', () => {
+    const editButton = createButton('Editar', () => {
       userIdInput.value = user.id;
       nomeInput.value = user.nome;
       emailInput.value = user.email;
@@ -142,9 +124,7 @@
     });
     actionsCell.appendChild(editButton);
 
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Deletar';
-    deleteButton.addEventListener('click', async () => {
+    const deleteButton = createButton('Deletar', async () => {
       await deleteUser(user.id);
       await getUsers();
     });
@@ -157,6 +137,24 @@
 
   userList.appendChild(table);
 }
+
+function createTableRow(data, elementType = 'td') {
+  const row = document.createElement('tr');
+  data.forEach(text => {
+    const cell = document.createElement(elementType);
+    cell.textContent = text;
+    row.appendChild(cell);
+  });
+  return row;
+}
+
+function createButton(text, onClick) {
+  const button = document.createElement('button');
+  button.textContent = text;
+  button.addEventListener('click', onClick);
+  return button;
+}
+
 //----------------------------------------------------------------
 // =====================
 // retornar em lista
@@ -209,4 +207,3 @@
     </script>
 </body>
 </html>
-<!-- //////////////////// FIM //////////////////////////////// -->
