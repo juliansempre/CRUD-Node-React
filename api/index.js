@@ -18,6 +18,6 @@ app.get('/', function (req, res) {
 //link que retorna o json da api
 app.use("/api", userRoutes)
 
-app.listen(8800, () => {
+app.listen(rocess.env.PORT || 8800, () => {
 	console.log("Servidor iniciado na porta 8800: http://localhost:8800");
 });
